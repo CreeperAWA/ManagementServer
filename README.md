@@ -1,5 +1,8 @@
 # ClassIsland.ManagementServer
 
+> [!warning]
+> 由于开发者时间精力受限，近期集控服务器暂停开发，不会有任何开发进展。目前集控服务器不做任何可用性和向后兼容性保证，请谨慎使用。开发恢复时间待定。
+
 ClassIsland 集控服务器。
 
 > **注意：本项目是 ClassIsland 集控服务器。如果您要查找 ClassIsland 软件本体，请前往仓库[ClassIsland/ClassIsland](https://github.com/ClassIsland/ClassIsland)**
