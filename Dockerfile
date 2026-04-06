@@ -26,4 +26,7 @@ RUN dotnet publish -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# 创建 data 目录并复制默认配置文件
+RUN mkdir -p ./data
+COPY ./ClassIsland.ManagementServer.Server/data/appsettings.json ./data/
 ENTRYPOINT ["dotnet", "ClassIsland.ManagementServer.Server.dll"]

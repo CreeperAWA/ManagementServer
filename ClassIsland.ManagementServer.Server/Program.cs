@@ -25,6 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder()
     .AddCommandLine(args)
+    .AddEnvironmentVariables()
     .Build();
 var setupMode = config["setup"] == "true";
 var migrateMode = config["migrate"] == "true";
@@ -36,7 +37,9 @@ if (setupMode)
         return;
     }
 }
-builder.Configuration.AddJsonFile("./data/appsettings.json", optional: true, reloadOnChange: true);
+builder.Configuration
+    .AddJsonFile("./data/appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 builder.Services.AddDbContext<ManagementServerContext>(options =>
 {
     var dbType = builder.Configuration["DatabaseType"];
@@ -47,6 +50,12 @@ builder.Services.AddDbContext<ManagementServerContext>(options =>
                 builder.Configuration.GetConnectionString(
                     builder.Environment.IsDevelopment() ? "Development" : "Production"
                 ),ServerVersion.Parse("8.0.0-mysql"));
+            break;
+        case "sqlite":
+            options.UseSqlite(
+                builder.Configuration.GetConnectionString(
+                    builder.Environment.IsDevelopment() ? "Development" : "Production"
+                ));
             break;
         default:
             throw new InvalidOperationException($"Unsupported database type: {dbType}");
