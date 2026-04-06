@@ -6,17 +6,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
 
-# 构建前端
-WORKDIR /src/classisland.managementserver.client
+# 构建后端（前端会在 dotnet publish 时自动构建）
+WORKDIR /src/ClassIsland.ManagementServer.Server
 RUN apt-get update && apt-get install -y npm
 RUN npm install -g pnpm
-RUN pnpm install
-# 安装 tsx 以替代 esno
-RUN pnpm add -D tsx
-RUN pnpm run build
-
-# 构建后端
-WORKDIR /src/ClassIsland.ManagementServer.Server
 RUN dotnet restore
 RUN dotnet build -c Release -o /app/build
 
