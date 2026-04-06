@@ -33,30 +33,15 @@ public static class Setup
         {
             Justification = Justify.Left
         });
-        var dbType = AnsiConsole.Prompt(
-            new TextPrompt<string>("[cyan](?)[/] 你要使用哪种数据库？(m-MySQL/s-SQLite)")
-                .AddChoices(["m", "s"])
-                .DefaultValue("m"));
-        
+        var wizardType = AnsiConsole.Prompt(
+            new TextPrompt<string>("[cyan](?)[/] 你要如何设置数据库？(w-向导配置/s-输入连接字符串)")
+                .AddChoices(["w", "s"])
+                .DefaultValue("w"));
         var finish = false;
         var connectionString = "";
         while (!finish)
         {
-            if (dbType == "m")
-            {
-                var wizardType = AnsiConsole.Prompt(
-                    new TextPrompt<string>("[cyan](?)[/] 你要如何设置数据库？(w-向导配置/s-输入连接字符串)")
-                        .AddChoices(["w", "s"])
-                        .DefaultValue("w"));
-                connectionString = wizardType == "w" ? GetConnectionStringsByWizard() : GetConnectionStringManual();
-            }
-            else
-            {
-                var dbPath = AnsiConsole.Prompt(
-                    new TextPrompt<string>("[cyan](?)[/] SQLite 数据库文件路径")
-                        .DefaultValue("./data/classisland_management.db"));
-                connectionString = $"Data Source={dbPath}";
-            }
+            connectionString = wizardType == "w" ? GetConnectionStringsByWizard() : GetConnectionStringManual();
             finish = AnsiConsole.Prompt(new TextPrompt<bool>($"[purple](*)[/] 数据库配置完成，连接字符串是 [bold]{connectionString}[/] 。配置是否正确？")
                 .AddChoice(true)
                 .AddChoice(false)
@@ -96,7 +81,7 @@ public static class Setup
                     }
                 }
             },
-            DatabaseType = dbType == "m" ? "mysql" : "sqlite"
+            DatabaseType = "mysql"
         };
         
         AnsiConsole.MarkupLine($"[purple](*)[/] 正在保存配置…");
