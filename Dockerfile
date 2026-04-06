@@ -11,6 +11,10 @@ WORKDIR /src/classisland.managementserver.client
 RUN apt-get update && apt-get install -y npm
 RUN npm install -g pnpm
 RUN pnpm install
+# 安装 tsx 以替代 esno
+RUN pnpm add -D tsx
+# 修改构建脚本，使用 tsx 运行 postBuild.ts
+RUN sed -i 's/esno/tsx/g' package.json
 RUN pnpm run build
 
 # 构建后端
