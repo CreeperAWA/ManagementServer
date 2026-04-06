@@ -13,13 +13,9 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm add -D tsx
 
-# 构建后端（前端会在 dotnet build 时自动构建）
+# 发布镜像（dotnet publish 会自动先构建再发布，包含前端）
 WORKDIR /src/ClassIsland.ManagementServer.Server
 RUN dotnet restore
-RUN dotnet build -c Release -o /app/build
-
-# 发布镜像
-FROM build AS publish
 RUN dotnet publish -c Release -o /app/publish
 
 FROM base AS final
