@@ -2,18 +2,25 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# 前端构建阶段
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS frontend-build
 WORKDIR /src
 COPY . .
-
-# 安装前端依赖
 WORKDIR /src/classisland.managementserver.client
 RUN apt-get update && apt-get install -y npm
 RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm add -D tsx
+RUN pnpm run build
 
-# 发布镜像（dotnet publish 会自动先构建再发布，包含前端）
+# 后端构建和发布阶段
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY . .
+# 从前端构建阶段复制构建产物
+COPY --from=frontend-build /src/classisland.managementserver.client/dist ./classisland.managementserver.client/dist
+
+FROM build AS publish
 WORKDIR /src/ClassIsland.ManagementServer.Server
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app/publish
