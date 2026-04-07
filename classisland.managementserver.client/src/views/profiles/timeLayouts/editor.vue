@@ -143,7 +143,7 @@ function formatSafeTime(date: Date) {
 }
 
 function contactDateTime(date: Date, time: string) {
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}T${time}`
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T${time}`
 }
 
 function insertTimePointAfter(type, index) {
@@ -210,8 +210,8 @@ async function saveTimeLayout() {
   try{
     isSaving.value = true;
     const today = new Date();
-    for (const i in timeLayout.layouts) {
-      const point = timeLayout.layouts[i];
+    for (const i in timeLayout.value.layouts) {
+      const point = timeLayout.value.layouts[i];
       point.startSecond = contactDateTime(today, point.startSecondSafe);
       point.endSecond = contactDateTime(today, point.endSecondSafe);
     }
@@ -237,7 +237,7 @@ onMounted(() => {
   <n-spin :show="isLoading">
     <div class="d-flex gap-2 ">
       <n-card class="proCard " :bordered="false">
-        <n-data-table :data="timeLayout.layouts"
+        <n-data-table :data="timeLayout.value.layouts"
                       :columns="mainTableColumns"
                       :max-height="`calc(var(--content-height) - 90px)`">
           <template #empty>
@@ -255,13 +255,13 @@ onMounted(() => {
       <n-card class="proCard " :bordered="false">
         <n-tabs type="line" animated>
           <n-tab-pane name="info" tab="时间表信息">
-            <n-form :model="timeLayout">
+            <n-form :model="timeLayout.value">
               <n-form-item label="时间表名称">
-                <n-input v-model:value="timeLayout.name"/>
+                <n-input v-model:value="timeLayout.value.name"/>
               </n-form-item>
               <n-form-item label="分组">
                 <PagedSelect
-                  v-model:value="timeLayout.groupId"
+                  v-model:value="timeLayout.value.groupId"
                   labelField="name"
                   valueField="id"
                   :get-data="getGroupData"
