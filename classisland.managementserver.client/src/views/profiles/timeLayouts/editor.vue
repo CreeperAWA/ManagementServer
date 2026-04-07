@@ -143,7 +143,7 @@ function formatSafeTime(date: Date) {
 }
 
 function contactDateTime(date: Date, time: string) {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T${time}`
+  return `${date.getFullYear()}-${padNumber(date.getMonth() + 1, 2)}-${padNumber(date.getDate(), 2)}T${time}`
 }
 
 function insertTimePointAfter(type, index) {
